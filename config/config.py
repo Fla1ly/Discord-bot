@@ -1,0 +1,3 @@
+# config/config.py
+DISCORD_BOT_TOKEN = 'MTE3NzkyMjc2NzE2NTg1NzgxMg.GJvrxX.aoer8uvk8ZtIzpEhbZFW5X3ZZ5nB9nuabO-CHM'
+OPENAI_API_KEY = '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'

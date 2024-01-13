@@ -1,39 +1,33 @@
 import discord
-from bot_logic import *
 from discord.ext import commands
 
-# Zmienna intencje przechowuje uprawnienia bota
 intents = discord.Intents.default()
-# Włączanie uprawnienia do czytania wiadomości
-intents.message_content = True
-# Tworzenie bota w zmiennej klienta i przekazanie mu uprawnień
-client = discord.Client(intents=intents)
+intents.message_content = True  
 
+from config import config
+import openai
 
-@client.event
+openai.api_key = config.OPENAI_API_KEY
+
+bot = commands.Bot(command_prefix='!', intents=intents)
+
+@bot.event
 async def on_ready():
-    print(f"Zalogowaliśmy się jako {client.user}")
-    await client.get_channel(1177921969702830133).send("Bot jest online!")
+    print(f'Logged in as {bot.user.name}')
 
-@client.event
+@bot.event
 async def on_message(message):
-    if message.author == client.user:
-        return
-    if message.content.startswith("$hello"):
-        await message.channel.send("Cześć!")
-    elif message.content.startswith("$bye"):
-        await message.channel.send("\\U0001f642")
-    elif message.content.startswith("$smile"):
-        await message.channel.send(gen_emodji())
-    elif message.content.startswith("$coin"):
-        await message.channel.send(flip_coin())
-    elif message.content.startswith("$pass"):
-        await message.channel.send(gen_pass(10))
-    elif message.content.startswith("$add"):
-        await message.channel.send("test")
-    else:
-        await message.channel.send(message.content)
+    if message.author.bot:
+        return  
 
-client.run("MTE3NzkyMjc2NzE2NTg1NzgxMg.GYcQ0a.GquCQ_LzT1AcuKBAQnj5dn90MLV6TITGB63re8")
+    prompt = message.content
+    response = openai.Completion.create(
+        engine="text-davinci-003",
+        prompt=prompt,
+        temperature=0.7,
+        max_tokens=150
+    )
 
-gen_pass(10)
+    await message.channel.send(response['choices'][0]['text'])
+
+bot.run(config.DISCORD_BOT_TOKEN)
