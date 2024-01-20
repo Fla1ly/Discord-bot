@@ -1,5 +1,7 @@
 from discord.ext import commands
-import openai
+from openai import OpenAI
+
+client = OpenAI()
 
 class ChatCog(commands.Cog):
     def __init__(self, bot):
@@ -8,18 +10,14 @@ class ChatCog(commands.Cog):
     @commands.Cog.listener()
     async def on_message(self, message):
         if message.author.bot:
-            return  # Ignore messages from bots
+            return  
 
-        # Use OpenAI to generate a response
         prompt = message.content
-        response = openai.Completion.create(
-            model="text-davinci-003",
-            prompt=prompt,
-            temperature=0.7,
-            max_tokens=150
-        )
+        response = client.completions.create(model="text-davinci-003",
+        prompt=prompt,
+        temperature=0.7,
+        max_tokens=150)
 
-        # Send the generated response to the same channel
         await message.channel.send(response.choices[0].text)
 
 def setup(bot):
