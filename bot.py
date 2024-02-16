@@ -8,7 +8,6 @@ client = OpenAI(api_key=config.OPENAI_API_KEY)
 intents = discord.Intents.default()
 intents.message_content = True
 
-# Set up OpenAI API key
 
 bot = commands.Bot(command_prefix='!', intents=intents)
 
@@ -16,7 +15,6 @@ bot = commands.Bot(command_prefix='!', intents=intents)
 async def on_ready():
     print(f'Logged in as {bot.user.name}')
 
-    # Replace GUILD_ID and CHANNEL_ID with your server and channel IDs
     GUILD_ID = 1177921969199525899
     CHANNEL_ID = 1177921969702830133
 
@@ -34,11 +32,10 @@ async def on_message(message):
     prompt = message.content
     response = client.chat.completions.create(model="gpt-3.5-turbo",
     messages=[
-        {"role": "system", "content": "You are a helpful assistant."},
+        {"role": "system", "content": "You are only answering questions about global warming."},
         {"role": "user", "content": prompt},
     ])
 
     await message.channel.send(response.choices[0].message.content)
 
-# Run the bot
 bot.run(config.DISCORD_BOT_TOKEN)
