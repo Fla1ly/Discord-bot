@@ -38,4 +38,15 @@ async def on_message(message):
 
     await message.channel.send(response.choices[0].message.content)
 
+@bot.command()
+async def check(ctx):
+    if ctx.message.attachments:
+        for attachment in ctx.message.attachments:
+            file_name = attachment.filename
+            file_url = attachment.url
+            await attachment.save(f"./{attachment.filename}")
+            await ctx.send(f"Zapisano obraz w ./{attachment.filename}")
+        else:
+            await ctx.send("Zapomniałeś załadować obraz :(")
+
 bot.run(config.DISCORD_BOT_TOKEN)
